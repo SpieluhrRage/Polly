@@ -1,0 +1,13 @@
+{
+  "name": "timur/game-balance-voting",
+  "description": "Серверная часть системы голосования за баланс игры",
+  "type": "project",
+  "require": {
+    "php": "^8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}
