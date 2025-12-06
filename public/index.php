@@ -17,6 +17,8 @@ use App\Infrastructure\Persistence\PollRepository;
 use App\Infrastructure\Persistence\UserRepository;
 use App\Application\Poll\ListPollsService;
 use App\Http\Controllers\Poll\ListPollsController;
+use App\Application\Poll\GetPollDetailsService;
+use App\Http\Controllers\Poll\GetPollController;
 
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -37,6 +39,7 @@ $loginUserService    = new LoginUserService($userRepository, $pdo);
 $authService         = new AuthService($userRepository, $pdo);
 $createPollService   = new CreatePollService($pollRepository, $optionRepository);
 $listPollsService    = new ListPollsService($pollRepository);
+$getPollDetailsService = new GetPollDetailsService($pollRepository, $optionRepository);
 // Роутер
 $router = new Router();
 
@@ -70,9 +73,16 @@ $router->post('/api/polls', function () use ($authService, $createPollService) {
     $controller();
 });
 
+// СПИСОК АКТИВНЫХ ОПРОСОВ (публичный)
 $router->get('/api/polls', function () use ($listPollsService) {
     $controller = new ListPollsController($listPollsService);
     $controller();
+});
+
+// ДЕТАЛИ ОПРОСА С ВАРИАНТАМИ (публичный)
+$router->get('/api/polls/{id}', function ($id) use ($getPollDetailsService) {
+    $controller = new GetPollController($getPollDetailsService);
+    $controller((int)$id);
 });
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
