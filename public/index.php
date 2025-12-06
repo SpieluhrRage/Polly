@@ -21,6 +21,11 @@ use App\Application\Poll\GetPollDetailsService;
 use App\Http\Controllers\Poll\GetPollController;
 use App\Application\Vote\CastVoteService;
 use App\Http\Controllers\Poll\VoteController;
+use App\Application\Vote\GetPollResultsService;
+use App\Http\Controllers\Poll\GetPollResultsController;
+use App\Application\Poll\ClosePollService;
+use App\Http\Controllers\Poll\ClosePollController;
+
 
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -43,6 +48,9 @@ $createPollService   = new CreatePollService($pollRepository, $optionRepository)
 $listPollsService    = new ListPollsService($pollRepository);
 $getPollDetailsService = new GetPollDetailsService($pollRepository, $optionRepository);
 $castVoteService       = new CastVoteService($pollRepository, $optionRepository, $pdo);
+$getPollResultsService   = new GetPollResultsService($pollRepository, $pdo);
+$closePollService      = new ClosePollService($pollRepository);
+
 // Роутер
 $router = new Router();
 
@@ -93,6 +101,19 @@ $router->post('/api/polls/{id}/vote', function ($id) use ($authService, $castVot
     $controller = new VoteController($authService, $castVoteService);
     $controller((int)$id);
 });
+
+// РЕЗУЛЬТАТЫ ОПРОСА (публичный)
+$router->get('/api/polls/{id}/results', function ($id) use ($getPollResultsService) {
+    $controller = new GetPollResultsController($getPollResultsService);
+    $controller((int)$id);
+});
+
+// ЗАКРЫТИЕ ОПРОСА (только создатель, требуется авторизация)
+$router->post('/api/polls/{id}/close', function ($id) use ($authService, $closePollService) {
+    $controller = new ClosePollController($authService, $closePollService);
+    $controller((int)$id);
+});
+
 
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);

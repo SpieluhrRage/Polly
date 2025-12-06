@@ -51,4 +51,6 @@ class Poll
     public function isActive(): bool       { return $this->isActive; }
     public function getCreatedBy(): int    { return $this->createdBy; }
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
+
+    public function close(): void { $this->isActive = false;}
 }

@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Poll;
 
 use App\Application\Auth\AuthService;
-use App\Application\Vote\CastVoteService;
+use App\Application\Poll\ClosePollService;
 use App\Http\Controllers\BaseController;
 
-class VoteController extends BaseController
+class ClosePollController extends BaseController
 {
     private AuthService $auth;
-    private CastVoteService $service;
+    private ClosePollService $service;
 
-    public function __construct(AuthService $auth, CastVoteService $service)
+    public function __construct(AuthService $auth, ClosePollService $service)
     {
         $this->auth = $auth;
         $this->service = $service;
@@ -19,7 +19,6 @@ class VoteController extends BaseController
 
     public function __invoke(int $pollId): void
     {
-
         $token = $this->extractBearerToken();
         if ($token === null) {
             $this->json(['error' => 'Authorization token is required'], 401);
@@ -32,42 +31,17 @@ class VoteController extends BaseController
             return;
         }
 
-
-        $rawBody = file_get_contents('php://input');
-        $data = json_decode($rawBody, true);
-
-        if (!is_array($data)) {
-            $this->json(['error' => 'Invalid JSON'], 400);
-            return;
-        }
-
-        $optionId = isset($data['option_id']) ? (int)$data['option_id'] : 0;
-        if ($optionId <= 0) {
-            $this->json(['error' => 'option_id is required'], 400);
-            return;
-        }
-
-        // 3. Собираем IP и User-Agent
-        $ip = $_SERVER['REMOTE_ADDR'] ?? null;
-        $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
-
         try {
-            $result = $this->service->castVote($user, $pollId, $optionId, $ip, $userAgent);
-            $this->json($result, 200);
+            $pollData = $this->service->close($user, $pollId);
+            $this->json($pollData, 200);
         } catch (\RuntimeException $e) {
             $message = $e->getMessage();
 
             if ($message === 'Poll not found') {
                 $this->json(['error' => $message], 404);
-            } elseif ($message === 'Option not found for this poll') {
-                $this->json(['error' => $message], 400);
-            } elseif ($message === 'User has already voted in this poll') {
-                $this->json(['error' => $message], 409); // Conflict
-            } 
-            elseif ($message === 'Poll is closed') {
+            } elseif ($message === 'Forbidden: only creator can close this poll') {
                 $this->json(['error' => $message], 403);
-            } // Forbidden
-            else {
+            } else {
                 $this->json(['error' => $message], 400);
             }
         } catch (\Throwable $e) {
