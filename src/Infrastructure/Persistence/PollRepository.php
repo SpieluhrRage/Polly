@@ -78,4 +78,21 @@ class PollRepository implements PollRepositoryInterface
             new \DateTimeImmutable($row['created_at'])
         );
     }
+
+    public function findAllActive(): array
+    {
+        $stmt = $this->pdo->query(
+            'SELECT * FROM polls WHERE is_active = 1 ORDER BY created_at DESC'
+        );
+    
+        $rows = $stmt->fetchAll();
+        $result = [];
+    
+        foreach ($rows as $row) {
+            $result[] = $this->mapRowToPoll($row);
+        }
+    
+        return $result;
+    }
+
 }

@@ -15,6 +15,9 @@ use App\Infrastructure\Persistence\Database;
 use App\Infrastructure\Persistence\OptionRepository;
 use App\Infrastructure\Persistence\PollRepository;
 use App\Infrastructure\Persistence\UserRepository;
+use App\Application\Poll\ListPollsService;
+use App\Http\Controllers\Poll\ListPollsController;
+
 
 require __DIR__ . '/../vendor/autoload.php';
 
@@ -33,7 +36,7 @@ $registerUserService = new RegisterUserService($userRepository);
 $loginUserService    = new LoginUserService($userRepository, $pdo);
 $authService         = new AuthService($userRepository, $pdo);
 $createPollService   = new CreatePollService($pollRepository, $optionRepository);
-
+$listPollsService    = new ListPollsService($pollRepository);
 // Роутер
 $router = new Router();
 
@@ -64,6 +67,11 @@ $router->get('/api/me', function () use ($authService) {
 // СОЗДАНИЕ ОПРОСА (требует авторизации)
 $router->post('/api/polls', function () use ($authService, $createPollService) {
     $controller = new CreatePollController($authService, $createPollService);
+    $controller();
+});
+
+$router->get('/api/polls', function () use ($listPollsService) {
+    $controller = new ListPollsController($listPollsService);
     $controller();
 });
 

@@ -9,4 +9,6 @@ interface PollRepositoryInterface
     public function findById(int $id): ?Poll;
 
     public function save(Poll $poll): Poll;
+
+    public function findAllActive(): array;
 }
