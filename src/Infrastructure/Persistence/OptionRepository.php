@@ -69,4 +69,24 @@ class OptionRepository implements OptionRepositoryInterface
 
         return $result;
     }
+
+    public function findByIdAndPollId(int $id, int $pollId): ?Option
+    {
+        $stmt = $this->pdo->prepare(
+            'SELECT * FROM `options` WHERE id = :id AND poll_id = :poll_id'
+        );
+        $stmt->execute(['id' => $id, 'poll_id' => $pollId]);
+        $row = $stmt->fetch();
+    
+        if (!$row) {
+            return null;
+        }
+    
+        return new Option(
+            (int)$row['id'],
+            (int)$row['poll_id'],
+            $row['text'],
+            new \DateTimeImmutable($row['created_at'])
+        );
+    }
 }

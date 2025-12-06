@@ -10,4 +10,6 @@ interface OptionRepositoryInterface
     public function save(Option $option): Option;
 
     public function findByPollId(int $pollId): array;
+
+    public function findByIdAndPollId(int $id, int $pollId): ?Option;
 }

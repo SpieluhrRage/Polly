@@ -19,6 +19,8 @@ use App\Application\Poll\ListPollsService;
 use App\Http\Controllers\Poll\ListPollsController;
 use App\Application\Poll\GetPollDetailsService;
 use App\Http\Controllers\Poll\GetPollController;
+use App\Application\Vote\CastVoteService;
+use App\Http\Controllers\Poll\VoteController;
 
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -40,6 +42,7 @@ $authService         = new AuthService($userRepository, $pdo);
 $createPollService   = new CreatePollService($pollRepository, $optionRepository);
 $listPollsService    = new ListPollsService($pollRepository);
 $getPollDetailsService = new GetPollDetailsService($pollRepository, $optionRepository);
+$castVoteService       = new CastVoteService($pollRepository, $optionRepository, $pdo);
 // Роутер
 $router = new Router();
 
@@ -84,5 +87,12 @@ $router->get('/api/polls/{id}', function ($id) use ($getPollDetailsService) {
     $controller = new GetPollController($getPollDetailsService);
     $controller((int)$id);
 });
+
+// ГОЛОСОВАНИЕ В ОПРОСЕ (требует авторизации)
+$router->post('/api/polls/{id}/vote', function ($id) use ($authService, $castVoteService) {
+    $controller = new VoteController($authService, $castVoteService);
+    $controller((int)$id);
+});
+
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
