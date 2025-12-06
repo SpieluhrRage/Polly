@@ -4,7 +4,9 @@
 declare(strict_types=1);
 
 use App\Application\Auth\RegisterUserService;
+use App\Application\Auth\LoginUserService;
 use App\Http\Controllers\Auth\RegisterController;
+use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\HealthCheckController;
 use App\Http\Router;
 use App\Infrastructure\Persistence\Database;
@@ -19,6 +21,7 @@ $pdo = $database->getConnection();
 
 $userRepository = new UserRepository($pdo);
 $registerUserService = new RegisterUserService($userRepository);
+$loginUserService = new LoginUserService($userRepository, $pdo);
 $router = new Router();
 
 
@@ -33,6 +36,11 @@ $router->post('/api/register', function () use ($registerUserService) {
     $controller();
 });
 
-// TODO: позже /api/login, /api/polls, /api/polls/{id}/vote и т.д.
+$router->post('/api/login', function () use ($loginUserService) {
+    $controller = new LoginController($loginUserService);
+    $controller();
+});
+
+// TODO: позже  /api/polls, /api/polls/{id}/vote и т.д.
 
 $router->dispatch($_SERVER['REQUEST_METHOD'], $_SERVER['REQUEST_URI']);
