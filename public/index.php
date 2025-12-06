@@ -1,15 +1,19 @@
 <?php
 declare(strict_types=1);
 
-use App\Application\Auth\RegisterUserService;
-use App\Application\Auth\LoginUserService;
 use App\Application\Auth\AuthService;
-use App\Http\Controllers\Auth\RegisterController;
+use App\Application\Auth\LoginUserService;
+use App\Application\Auth\RegisterUserService;
+use App\Application\Poll\CreatePollService;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\MeController;
+use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\HealthCheckController;
+use App\Http\Controllers\Poll\CreatePollController;
 use App\Http\Router;
 use App\Infrastructure\Persistence\Database;
+use App\Infrastructure\Persistence\OptionRepository;
+use App\Infrastructure\Persistence\PollRepository;
 use App\Infrastructure\Persistence\UserRepository;
 
 require __DIR__ . '/../vendor/autoload.php';
@@ -20,12 +24,15 @@ $database = new Database($dbConfig);
 $pdo = $database->getConnection();
 
 // Репозитории
-$userRepository = new UserRepository($pdo);
+$userRepository   = new UserRepository($pdo);
+$pollRepository   = new PollRepository($pdo);
+$optionRepository = new OptionRepository($pdo);
 
 // Сервисы
 $registerUserService = new RegisterUserService($userRepository);
 $loginUserService    = new LoginUserService($userRepository, $pdo);
 $authService         = new AuthService($userRepository, $pdo);
+$createPollService   = new CreatePollService($pollRepository, $optionRepository);
 
 // Роутер
 $router = new Router();
@@ -48,9 +55,15 @@ $router->post('/api/login', function () use ($loginUserService) {
     $controller();
 });
 
-// Текущий пользователь (требует токен)
+// Текущий пользователь
 $router->get('/api/me', function () use ($authService) {
     $controller = new MeController($authService);
+    $controller();
+});
+
+// СОЗДАНИЕ ОПРОСА (требует авторизации)
+$router->post('/api/polls', function () use ($authService, $createPollService) {
+    $controller = new CreatePollController($authService, $createPollService);
     $controller();
 });
 
