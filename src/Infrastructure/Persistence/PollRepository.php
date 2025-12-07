@@ -95,4 +95,11 @@ class PollRepository implements PollRepositoryInterface
         return $result;
     }
 
+    public function deleteById(int $id): void
+    {
+        $stmt = $this->pdo->prepare('DELETE FROM polls WHERE id = :id');
+        $stmt->execute(['id' => $id]);
+    }
+
+
 }

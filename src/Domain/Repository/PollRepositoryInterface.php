@@ -11,4 +11,6 @@ interface PollRepositoryInterface
     public function save(Poll $poll): Poll;
 
     public function findAllActive(): array;
+
+     public function deleteById(int $id): void;
 }

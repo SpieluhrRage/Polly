@@ -27,6 +27,11 @@ use App\Application\Poll\ClosePollService;
 use App\Http\Controllers\Poll\ClosePollController;
 use App\Application\Poll\EditPollService;
 use App\Http\Controllers\Poll\EditPollController;
+use App\Application\Poll\OpenPollService;
+use App\Http\Controllers\Poll\OpenPollController;
+use App\Application\Poll\DeletePollService;
+use App\Http\Controllers\Poll\DeletePollController;
+
 
 
 
@@ -54,6 +59,10 @@ $castVoteService       = new CastVoteService($pollRepository, $optionRepository,
 $getPollResultsService   = new GetPollResultsService($pollRepository, $pdo);
 $closePollService      = new ClosePollService($pollRepository);
 $editPollService       = new EditPollService($pollRepository);
+$openPollService       = new OpenPollService($pollRepository);
+$deletePollService     = new DeletePollService($pollRepository);
+
+
 
 
 // Роутер
@@ -122,6 +131,18 @@ $router->post('/api/polls/{id}/close', function ($id) use ($authService, $closeP
 // РЕДАКТИРОВАНИЕ ОПРОСА (только создатель, только активный, требуется авторизация)
 $router->post('/api/polls/{id}/edit', function ($id) use ($authService, $editPollService) {
     $controller = new EditPollController($authService, $editPollService);
+    $controller((int)$id);
+});
+
+// ОТКРЫТИЕ ОПРОСА (только создатель, авторизация)
+$router->post('/api/polls/{id}/open', function ($id) use ($authService, $openPollService) {
+    $controller = new OpenPollController($authService, $openPollService);
+    $controller((int)$id);
+});
+
+// УДАЛЕНИЕ ОПРОСА (только создатель, только закрытый, авторизация)
+$router->post('/api/polls/{id}/delete', function ($id) use ($authService, $deletePollService) {
+    $controller = new DeletePollController($authService, $deletePollService);
     $controller((int)$id);
 });
 
