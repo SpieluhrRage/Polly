@@ -34,8 +34,17 @@ class CastVoteService
         $poll = $this->polls->findById($pollId);
 
         if ($poll === null) {
-            $this->logVote($pollId, $optionId, $user->getId(), $ipAddress, $userAgent, false, 'Poll not found');
-            throw new \RuntimeException('Poll not found');
+            $this->logVote(
+            null,
+            $optionId,
+            $user->getId(),
+            $ipAddress,
+            $userAgent,
+            false,
+            'Poll not found'
+        );
+
+        throw new \RuntimeException('Poll not found');
         }
         if (!$poll->isActive()) {
             $this->logVote($pollId, $optionId, $user->getId(), $ipAddress, $userAgent, false, 'Poll is closed');
