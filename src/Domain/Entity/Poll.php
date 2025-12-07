@@ -53,4 +53,9 @@ class Poll
     public function getCreatedAt(): \DateTimeImmutable { return $this->createdAt; }
 
     public function close(): void { $this->isActive = false;}
+
+    public function setTitle(string $title): void { $this->title = $title;}
+
+public function setDescription(?string $description): void { $this->description = $description; }
+
 }

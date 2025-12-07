@@ -25,6 +25,9 @@ use App\Application\Vote\GetPollResultsService;
 use App\Http\Controllers\Poll\GetPollResultsController;
 use App\Application\Poll\ClosePollService;
 use App\Http\Controllers\Poll\ClosePollController;
+use App\Application\Poll\EditPollService;
+use App\Http\Controllers\Poll\EditPollController;
+
 
 
 
@@ -50,6 +53,8 @@ $getPollDetailsService = new GetPollDetailsService($pollRepository, $optionRepos
 $castVoteService       = new CastVoteService($pollRepository, $optionRepository, $pdo);
 $getPollResultsService   = new GetPollResultsService($pollRepository, $pdo);
 $closePollService      = new ClosePollService($pollRepository);
+$editPollService       = new EditPollService($pollRepository);
+
 
 // Роутер
 $router = new Router();
@@ -111,6 +116,12 @@ $router->get('/api/polls/{id}/results', function ($id) use ($getPollResultsServi
 // ЗАКРЫТИЕ ОПРОСА (только создатель, требуется авторизация)
 $router->post('/api/polls/{id}/close', function ($id) use ($authService, $closePollService) {
     $controller = new ClosePollController($authService, $closePollService);
+    $controller((int)$id);
+});
+
+// РЕДАКТИРОВАНИЕ ОПРОСА (только создатель, только активный, требуется авторизация)
+$router->post('/api/polls/{id}/edit', function ($id) use ($authService, $editPollService) {
+    $controller = new EditPollController($authService, $editPollService);
     $controller((int)$id);
 });
 
