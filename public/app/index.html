@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>In-Game Content Voting — Polls</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<header class="topbar">
+    <div class="topbar__left">
+        <span class="logo">Polly - Gamechanger</span>
+    </div>
+    <div class="topbar__right">
+        <button id="loginButton" class="btn btn-secondary">Login / Register</button>
+        <span id="userInfo" class="user-info" style="display:none;"></span>
+        <button id="logoutButton" class="btn btn-secondary" style="display:none;">Выйти</button>
+    </div>
+</header>
+
+<main class="container">
+    <section class="page-header">
+        <h1>Все опросы</h1>
+        <button id="createPollButton" class="btn btn-primary" style="display:none;">
+            Создать опрос
+        </button>
+    </section>
+
+    <section id="pollList" class="poll-list">
+       
+    </section>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>

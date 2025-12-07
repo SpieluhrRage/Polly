@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Register</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<main class="auth-container">
+    <section class="auth-card">
+        <h1 id="authTitle">Login</h1>
+
+        <form id="authForm">
+            <label>
+                Имя пользователя
+                <input type="text" name="username" required>
+            </label>
+            <label>
+                Пароль
+                <input type="password" name="password" required>
+            </label>
+            <button type="submit" class="btn btn-primary" id="submitButton">
+                Войти
+            </button>
+            <p id="authMessage" class="message"></p>
+        </form>
+
+        <button id="toggleModeButton" class="btn btn-secondary">
+            Нет аккаунта? Зарегистрироваться
+        </button>
+
+        <button id="backButton" class="btn btn-link">
+            ← Назад к опросам
+        </button>
+    </section>
+</main>
+
+<script src="js/api.js"></script>
+<script src="js/auth.js"></script>
+</body>
+</html>
