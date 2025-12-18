@@ -62,17 +62,9 @@ $editPollService       = new EditPollService($pollRepository);
 $openPollService       = new OpenPollService($pollRepository);
 $deletePollService     = new DeletePollService($pollRepository);
 
-
-
-
 // Роутер
 $router = new Router();
 
-// Health
-$router->get('/api/health', function () {
-    $controller = new HealthCheckController();
-    $controller();
-});
 
 // Регистрация
 $router->post('/api/register', function () use ($registerUserService) {
@@ -86,11 +78,6 @@ $router->post('/api/login', function () use ($loginUserService) {
     $controller();
 });
 
-// Текущий пользователь
-$router->get('/api/me', function () use ($authService) {
-    $controller = new MeController($authService);
-    $controller();
-});
 
 // СОЗДАНИЕ ОПРОСА (требует авторизации)
 $router->post('/api/polls', function () use ($authService, $createPollService) {

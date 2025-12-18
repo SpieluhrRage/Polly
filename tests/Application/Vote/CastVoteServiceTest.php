@@ -63,7 +63,6 @@ final class CastVoteServiceTest extends DatabaseTestCase
     {
         [$poll, $options] = $this->createPollWithTwoOptions();
 
-        // Первый голос — ок
         $this->service->castVote(
             $this->testUser,
             $poll->getId(),

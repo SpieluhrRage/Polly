@@ -47,7 +47,6 @@ class VoteController extends BaseController
             return;
         }
 
-        // 3. Собираем IP и User-Agent
         $ip = $_SERVER['REMOTE_ADDR'] ?? null;
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? null;
 
